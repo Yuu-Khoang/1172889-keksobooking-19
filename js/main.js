@@ -16,16 +16,22 @@ var photoHotel = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://
 
 function getNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+};
 
 function getElementArray(array) {
   var random = Math.floor(Math.random() * array.length);
   return array[random];
-}
+};
 
 function getRandomArray(array) {
-  // Здесь что-то пошло не так..
-}
+  var amount = getNumber(1, array.length);
+  var randomArray = [];
+  for (var i = 1; i < amount; i++) {
+    var item = array[i];
+    randomArray.push(item);
+  };
+  return randomArray;
+};
 
 function createAds() {
   var ads = [];
@@ -55,13 +61,28 @@ function createAds() {
         'y': axisY
       },
     }
+
+    var pinMap = document.querySelector('.map__pins');
+    var pinTemplate = document.querySelector('#pin')
+      .content
+      .querySelector('.map__pin');
+
+    var pinElement = pinTemplate.cloneNode(true);
+    pinElement.style.left = advertObject.location.x - 25 + 'px';
+    pinElement.style.top = advertObject.location.y - 70 + 'px';
+    pinElement.querySelector('img').alt = advertObject.offer.description;
+    pinElement.querySelector('img').src = advertObject.author.avatar;
+    pinMap.appendChild(pinElement);
+
     ads.push(advertObject);
   }
   return ads;
-}
+};
 
 var mapRemove = document.querySelector('.map');
 mapRemove.classList.remove('map--faded')
 
 var generatedAds = createAds();
 console.log(generatedAds)
+
+
