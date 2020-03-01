@@ -78,59 +78,66 @@ function createAds() {
         'y': coordinateY
       },
     };
-
-    var pinElement = pinTemplate.cloneNode(true);
-    pinElement.style.left = advertObject.location.x - AXIS_X_SHIFT + 'px';
-    pinElement.style.top = advertObject.location.y - AXIS_Y_SHIFT + 'px';
-    pinElement.querySelector('img').alt = advertObject.offer.description;
-    pinElement.querySelector('img').src = advertObject.author.avatar;
-    pinMap.appendChild(pinElement);
-
-
-    var adsElement = adsTemplate.cloneNode(true);
-    adsElement.querySelector('.popup__title').textContent = advertObject.offer.title;
-    adsElement.querySelector('.popup__text--address').textContent = advertObject.offer.address;
-    adsElement.querySelector('.popup__text--price').textContent = advertObject.offer.price + '₽/ночь';
-    adsElement.querySelector('.popup__type').textContent =
-    if (advertObject.offer.type = 'palace') {
-      'Дворец'
-    }
-    if (advertObject.offer.type = 'flat') {
-      'Квартира'
-    }
-    if (advertObject.offer.type = 'house') {
-      'Дом'
-    }
-    if (advertObject.offer.type = 'bungalo') {
-      'Бунгало'
-    };
-    adsElement.querySelector('.popup__text--capacity').textContent = advertObject.offer.rooms + ' комнаты для ' + advertObject.offer.guests + ' гостей';
-    adsElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + advertObject.offer.checkin + ', выезд до ' + advertObject.offer.checkout;
-    adsElement.querySelector('.popup__features').textContent = advertObject.offer.features;
-    adsElement.querySelector('.popup__description').textContent = advertObject.offer.description;
-    adsElement.querySelector('.popup__photo').src = photo;
-    for (var j = 1; j < advertObject.offer.photos; j++) {
-      var photo = [];
-      var item = advertObject.offer.photos[j];
-      photo.push(item);
-    };
-    adsElement.querySelector('img').src = advertObject.author.avatar;
-    adsList.insertBefore(adsElement, map.querySelector('.map__filters-container'));
-
-    /*
-    В блок .popup__type выведите тип жилья offer.type: Квартира для flat, Бунгало для bungalo, Дом для house, Дворец для palace.
-    В блок .popup__photos выведите все фотографии из списка offer.photos. Каждая из строк массива photos должна записываться как src соответствующего изображения.
-    */
-
     ads.push(advertObject);
   }
   return ads;
 }
 
+var generatedAds = createAds();
+
+function createPins() {
+  for (var i = 0; i < generatedAds.length; i++) {
+    var pinElement = pinTemplate.cloneNode(true);
+    pinElement.style.left = generatedAds[i].location.x - AXIS_X_SHIFT + 'px';
+    pinElement.style.top = generatedAds[i].location.y - AXIS_Y_SHIFT + 'px';
+    pinElement.querySelector('img').alt = generatedAds[i].offer.description;
+    pinElement.querySelector('img').src = generatedAds[i].author.avatar;
+    pinMap.appendChild(pinElement);
+  }
+}
+
+createPins();
+
+function showCard(card) {
+  var adsElement = adsTemplate.cloneNode(true);
+  adsElement.querySelector('.popup__title').textContent = generatedAds[0].offer.title;
+  adsElement.querySelector('.popup__text--address').textContent = generatedAds[0].offer.address;
+  adsElement.querySelector('.popup__text--price').textContent = generatedAds[0].offer.price + '₽/ночь';
+  if (generatedAds[0].offer.type === 'palace') {
+    adsElement.querySelector('.popup__type').textContent = 'Дворец';
+  }
+  if (generatedAds[0].offer.type === 'flat') {
+    adsElement.querySelector('.popup__type').textContent = 'Квартира';
+  }
+  if (generatedAds[0].offer.type === 'house') {
+    adsElement.querySelector('.popup__type').textContent = 'Дом';
+  }
+  if (generatedAds[0].offer.type === 'bungalo') {
+    adsElement.querySelector('.popup__type').textContent = 'Бунгало';
+  }
+  adsElement.querySelector('.popup__text--capacity').textContent = generatedAds[0].offer.rooms + ' комнаты для ' + generatedAds[0].offer.guests + ' гостей';
+  adsElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + generatedAds[0].offer.checkin + ', выезд до ' + generatedAds[0].offer.checkout;
+  adsElement.querySelector('.popup__features').textContent = generatedAds[0].offer.features;
+  adsElement.querySelector('.popup__description').textContent = generatedAds[0].offer.description;
+  adsElement.querySelector('.popup__photo').src = photo;
+  for (var j = 1; j < generatedAds.offer.photos; j++) {
+    var photo = [];
+    var item = generatedAds.offer.photos[j];
+    photo.push(item);
+  }
+  adsElement.querySelector('img').src = generatedAds[0].author.avatar;
+  adsList.insertBefore(adsElement, map.querySelector('.map__filters-container'));
+}
+
+var cardNumber = createPins[0];
+showCard(cardNumber);
+
+/*
+В блок .popup__photos выведите все фотографии из списка offer.photos. Каждая из строк массива photos должна записываться как src соответствующего изображения.
+*/
 var map = document.querySelector('.map');
 map.classList.remove('map--faded');
 
-var generatedAds = createAds();
 // console.log(generatedAds);
 
 
