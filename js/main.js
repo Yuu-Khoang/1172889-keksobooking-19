@@ -21,6 +21,9 @@ var FEATURES_HOTEL = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'co
 var DESCRIPTION_LIST = ['Очень удобное расположение и всего десять минут до круглосуточного магазина!', 'Чисто и уютно. То, что нужно для отдыха!', 'Внимательный и дружелюбный персонал, который поможет с любыми вопросами во время проживания', 'Потрясающий вид из окна на токийские рассветы и закаты'];
 var PHOTO_HOTEL = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
+var map = document.querySelector('.map');
+map.classList.remove('map--faded');
+
 var pinMap = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
   .content
@@ -43,7 +46,7 @@ function getElementArray(array) {
 function getRandomArray(array) {
   var amount = getNumber(1, array.length);
   var randomArray = [];
-  for (var i = 1; i < amount; i++) {
+  for (var i = 0; i < amount; i++) {
     var item = array[i];
     randomArray.push(item);
   }
@@ -85,59 +88,55 @@ function createAds() {
 
 var generatedAds = createAds();
 
-function createPins() {
+function createPins(adsArray) {
   for (var i = 0; i < generatedAds.length; i++) {
     var pinElement = pinTemplate.cloneNode(true);
-    pinElement.style.left = generatedAds[i].location.x - AXIS_X_SHIFT + 'px';
-    pinElement.style.top = generatedAds[i].location.y - AXIS_Y_SHIFT + 'px';
-    pinElement.querySelector('img').alt = generatedAds[i].offer.description;
-    pinElement.querySelector('img').src = generatedAds[i].author.avatar;
+    pinElement.style.left = adsArray[i].location.x - AXIS_X_SHIFT + 'px';
+    pinElement.style.top = adsArray[i].location.y - AXIS_Y_SHIFT + 'px';
+    pinElement.querySelector('img').alt = adsArray[i].offer.description;
+    pinElement.querySelector('img').src = adsArray[i].author.avatar;
     pinMap.appendChild(pinElement);
   }
 }
 
-createPins();
+createPins(generatedAds);
 
 function showCard(card) {
   var adsElement = adsTemplate.cloneNode(true);
-  adsElement.querySelector('.popup__title').textContent = generatedAds[0].offer.title;
-  adsElement.querySelector('.popup__text--address').textContent = generatedAds[0].offer.address;
-  adsElement.querySelector('.popup__text--price').textContent = generatedAds[0].offer.price + '₽/ночь';
-  if (generatedAds[0].offer.type === 'palace') {
+  adsElement.querySelector('.popup__title').textContent = card.offer.title;
+  adsElement.querySelector('.popup__text--address').textContent = card.offer.address;
+  adsElement.querySelector('.popup__text--price').textContent = card.offer.price + '₽/ночь';
+  if (card.offer.type === 'palace') {
     adsElement.querySelector('.popup__type').textContent = 'Дворец';
   }
-  if (generatedAds[0].offer.type === 'flat') {
+  if (card.offer.type === 'flat') {
     adsElement.querySelector('.popup__type').textContent = 'Квартира';
   }
-  if (generatedAds[0].offer.type === 'house') {
+  if (card.offer.type === 'house') {
     adsElement.querySelector('.popup__type').textContent = 'Дом';
   }
-  if (generatedAds[0].offer.type === 'bungalo') {
+  if (card.offer.type === 'bungalo') {
     adsElement.querySelector('.popup__type').textContent = 'Бунгало';
   }
-  adsElement.querySelector('.popup__text--capacity').textContent = generatedAds[0].offer.rooms + ' комнаты для ' + generatedAds[0].offer.guests + ' гостей';
-  adsElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + generatedAds[0].offer.checkin + ', выезд до ' + generatedAds[0].offer.checkout;
-  adsElement.querySelector('.popup__features').textContent = generatedAds[0].offer.features;
-  adsElement.querySelector('.popup__description').textContent = generatedAds[0].offer.description;
-  adsElement.querySelector('.popup__photo').src = photo;
-  for (var j = 1; j < generatedAds.offer.photos; j++) {
-    var photo = [];
-    var item = generatedAds.offer.photos[j];
-    photo.push(item);
+  adsElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
+  adsElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
+  adsElement.querySelector('.popup__features').textContent = card.offer.features;
+  adsElement.querySelector('.popup__description').textContent = card.offer.description;
+
+  var galleryPhotos = card.offer.photos;
+  var photosContainer = adsElement.querySelector('.popup__photos');
+
+  for (var j = 0; j < galleryPhotos.length; j++) {
+    var photoTemplate = adsElement.querySelector('.popup__photo').cloneNode(true);
+    photoTemplate.src = galleryPhotos[j];
+    photosContainer.appendChild(photoTemplate);
   }
-  adsElement.querySelector('img').src = generatedAds[0].author.avatar;
-  adsList.insertBefore(adsElement, map.querySelector('.map__filters-container'));
+  photosContainer.removeChild(photosContainer.firstElementChild);
+
+  adsElement.querySelector('img').src = card.author.avatar;
+  adsList.insertBefore(adsElement, document.querySelector('.map__filters-container'));
 }
 
-var cardNumber = createPins[0];
-showCard(cardNumber);
-
-/*
-В блок .popup__photos выведите все фотографии из списка offer.photos. Каждая из строк массива photos должна записываться как src соответствующего изображения.
-*/
-var map = document.querySelector('.map');
-map.classList.remove('map--faded');
-
-// console.log(generatedAds);
-
+var card = generatedAds[0];
+showCard(card);
 
