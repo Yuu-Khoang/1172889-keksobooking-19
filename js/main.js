@@ -120,7 +120,19 @@ function showCard(card) {
   }
   adsElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
   adsElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
-  adsElement.querySelector('.popup__features').textContent = card.offer.features;
+  var featuresList = card.offer.features;
+  var featuresElements = adsElement.querySelector('.popup__features');
+  featuresElements.innerHTML = '';
+
+  for (var i = 0; i < featuresList.length; i++) {
+    var featuresElement = document.createElement('li');
+    featuresElement.innerHTML = featuresList[i];
+    featuresElement.classList.add('popup__feature');
+    featuresElement.classList.add('popup__feature' + '--' + featuresElement.textContent);
+    featuresElement.textContent = '';
+    featuresElements.prepend(featuresElement);
+  }
+
   adsElement.querySelector('.popup__description').textContent = card.offer.description;
 
   var galleryPhotos = card.offer.photos;
